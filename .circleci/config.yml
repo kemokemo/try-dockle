@@ -11,7 +11,7 @@ jobs:
       - checkout
       - docker/check
       - docker/build:
-          image: kemokemo/try-dockle:${CIRCLE_SHA1}
+          image: ${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}
       - run:
           name: Install dockle
           command: |
@@ -26,7 +26,7 @@ jobs:
              mv dockle /usr/local/bin
       - run:
           name: Scan the local image with Dockle
-          command: dockle --exit-code 1 try-dockle:${CIRCLE_SHA1}
+          command: dockle --exit-code 1 ${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}:${CIRCLE_SHA1}
 workflows:
   version: 2
   release:
