@@ -10,6 +10,5 @@ RUN adduser -D web
 USER web
 WORKDIR /app
 COPY --from=builder /go/src/app/web .
-COPY ./public ./public
 ENV GIN_MODE=release
 CMD ["./web"]
