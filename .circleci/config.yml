@@ -17,6 +17,7 @@ jobs:
           command: |
              VERSION=$(
                curl -I "https://github.com/goodwithtech/dockle/releases/latest" | \
+               tr -d '\r' | \
                grep 'Location' | \
                sed -E 's/.*v([0-9\.]+)*$/\1/'
              )
