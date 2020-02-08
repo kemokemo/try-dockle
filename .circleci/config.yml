@@ -4,7 +4,7 @@ orbs:
   docker: circleci/docker@0.5.20
 
 jobs:
-  check-and-build:
+  build-and-test:
     executor: docker/docker
     steps:
       - setup_remote_docker
@@ -12,9 +12,6 @@ jobs:
       - docker/check
       - docker/build:
           image: ${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}
-  test:
-    executor: docker/docker
-    steps:
       - run:
           name: Install dockle
           command: |
@@ -27,7 +24,7 @@ jobs:
              tar zxvf dockle_${VERSION}_Linux-64bit.tar.gz
              sudo mv dockle /usr/local/bin
       - run:
-          name: Scan the local image with Dockle
+          name: Scan the image with dockle
           command: dockle --exit-code 1 ${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}:${CIRCLE_SHA1}
   deploy:
     executor: docker/docker
@@ -43,13 +40,10 @@ jobs:
 workflows:
   build-and-deploy:
     jobs:
-      - check-and-build
-      - test:
-          requires:
-            - check-and-build
+      - build-and-test
       - deploy:
           requires:
-            - test
+            - build-and-test
           filters:
             tags:
               only: /^v.*/
