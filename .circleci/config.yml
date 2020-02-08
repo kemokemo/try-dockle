@@ -4,7 +4,7 @@ orbs:
   docker: circleci/docker@0.5.20
 
 jobs:
-  build:
+  check and build:
     executor: docker/docker
     steps:
       - setup_remote_docker
@@ -12,6 +12,9 @@ jobs:
       - docker/check
       - docker/build:
           image: ${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}
+  test:
+    executor: docker/docker
+    steps:
       - run:
           name: Install dockle
           command: |
@@ -26,8 +29,26 @@ jobs:
       - run:
           name: Scan the local image with Dockle
           command: dockle --exit-code 1 ${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}:${CIRCLE_SHA1}
+  deploy:
+    executor: docker/docker
+    steps:
+      - docker/push:
+          digest-path: /tmp/digest.txt
+          image: ${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}
+      - run:
+          command: |
+            echo "Digest is: $(</tmp/digest.txt)"
+
 workflows:
   version: 2
-  release:
+  build and deploy:
     jobs:
-      - build
+      - check and build
+      - test
+      - deploy:
+          requires: test
+          filters:
+            tags:
+              only: /^v.*/
+            branches:
+              ignore: /.*/
