@@ -16,10 +16,9 @@ jobs:
           name: Install dockle
           command: |
              VERSION=$(
-               curl -I "https://github.com/goodwithtech/dockle/releases/latest" | \
-               tr -d '\r' | \
-               grep 'Location' | \
-               sed -E 's/.*v([0-9\.]+)*$/\1/'
+               curl --silent "https://api.github.com/repos/goodwithtech/dockle/releases/latest" | \
+               grep '"tag_name":' | \
+               sed -E 's/.*"v([^"]+)".*/\1/'
              )
              wget https://github.com/goodwithtech/dockle/releases/download/v${VERSION}/dockle_${VERSION}_Linux-64bit.tar.gz
              tar zxvf dockle_${VERSION}_Linux-64bit.tar.gz
