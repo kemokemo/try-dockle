@@ -29,13 +29,8 @@ jobs:
   deploy-to-docker:
     executor: docker/docker
     steps:
-      - docker/push:
-          digest-path: /tmp/digest.txt
+      - docker/publish:
           image: ${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}
-      - run:
-          name: Display digest of the image
-          command: |
-            echo "Digest is: $(</tmp/digest.txt)"
 
 workflows:
   version: 2
