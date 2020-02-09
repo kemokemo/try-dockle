@@ -31,7 +31,31 @@ workflows:
   build-and-deploy:
     jobs:
       - build-and-test
+      # When you merge to master, docker push with latest tag.
       - docker/publish:
           image: ${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}
+          tag: 'latest'
           requires:
             - build-and-test
+          filters:
+            branches:
+              only: master
+  deploy-tags:
+    # Triggerd only when a git tag created
+    jobs:
+      - build-and-test:
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v.*/
+      - docker/publish:
+          image: ${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}
+          tag: ${CIRCLE_TAG}
+          requires:
+            - build-and-test
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v.*/
