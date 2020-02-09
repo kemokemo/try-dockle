@@ -26,7 +26,7 @@ jobs:
       - run:
           name: Scan the image with dockle
           command: dockle --exit-code 1 ${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}:${CIRCLE_SHA1}
-  deploy:
+  deploy-to-docker:
     executor: docker/docker
     steps:
       - docker/push:
@@ -42,7 +42,7 @@ workflows:
   build-and-deploy:
     jobs:
       - build-and-test
-      - deploy:
+      - deploy-to-docker:
           requires:
             - build-and-test
           filters:
