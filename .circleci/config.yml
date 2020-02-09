@@ -45,8 +45,3 @@ workflows:
       - deploy-to-docker:
           requires:
             - build-and-test
-          filters:
-            tags:
-              only: /^v.*/
-            branches:
-              ignore: /.*/
