@@ -33,5 +33,24 @@ workflows:
       - build-and-test
       - docker/publish:
           image: ${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}
+          tag: 'latest'
           requires:
             - build-and-test
+          filters:
+            branches:
+              only:
+                - master
+  deploy-tags:
+    jobs:
+      - build-and-test:
+          filters:
+            tags:
+              only: /^v.*/
+      - docker/publish:
+          image: ${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}
+          tag: ${CIRCLE_TAG}
+          requires:
+            - build-and-test
+          filters:
+            tags:
+              only: /^v.*/
