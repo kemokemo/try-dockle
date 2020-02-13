@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/gin-gonic/gin"
@@ -18,5 +19,5 @@ func main() {
 			"liveness": "fine",
 		})
 	})
-	r.Run(":%s", port)
+	r.Run(fmt.Sprintf(":%s", port))
 }
